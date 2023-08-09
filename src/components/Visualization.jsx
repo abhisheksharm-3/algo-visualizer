@@ -9,16 +9,17 @@ const Visualization = () => {
   const [visitedNodes, setVisitedNodes] = useState([]);
   const [isBfsInProgress, setIsBfsInProgress] = useState(false);
   const [isDfsInProgress, setIsDfsInProgress] = useState(false);
+  const [bfsStack, setBfsStack] = useState([]);
+  const [dfsStack, setDfsStack] = useState([]);
 
   const handleNodeClick = (event) => {
     if (event.button === 0) {
-      // Left click to add a node
       const rect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       setNodes((prevNodes) => [
         ...prevNodes,
-        { x, y, label: (prevNodes.length + 1).toString() },
+        { x, y, label: prevNodes.length.toString() },
       ]);
     }
   };
@@ -53,6 +54,7 @@ const Visualization = () => {
     if (isBfsInProgress) return;
     setIsBfsInProgress(true);
     setVisitedNodes([]);
+    setBfsStack([...selectedParentNodes]);
 
     const bfsQueue = [...selectedParentNodes];
     const visited = new Set();
@@ -69,10 +71,11 @@ const Visualization = () => {
       for (const node of adjacentNodes) {
         if (!visited.has(node) && !bfsQueue.includes(node)) {
           bfsQueue.push(node);
+          setBfsStack((prevStack) => [...prevStack, node]);
         }
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Add delay for visualization
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     setIsBfsInProgress(false);
@@ -82,6 +85,7 @@ const Visualization = () => {
     if (isDfsInProgress) return;
     setIsDfsInProgress(true);
     setVisitedNodes([]);
+    setDfsStack([...selectedParentNodes]);
 
     const dfsStack = [...selectedParentNodes];
     const visited = new Set();
@@ -98,10 +102,11 @@ const Visualization = () => {
       for (const node of adjacentNodes) {
         if (!visited.has(node) && !dfsStack.includes(node)) {
           dfsStack.push(node);
+          setDfsStack((prevStack) => [...prevStack, node]);
         }
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Add delay for visualization
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     setIsDfsInProgress(false);
@@ -128,7 +133,7 @@ const Visualization = () => {
           );
           const distance = Math.sqrt(
             (targetNode.x - sourceNode.x) ** 2 +
-              (targetNode.y - sourceNode.y) ** 2
+            (targetNode.y - sourceNode.y) ** 2
           );
 
           return (
@@ -205,6 +210,28 @@ const Visualization = () => {
           <span
             key={index}
             className="ml-2 bg-green-500 text-white font-bold px-2 py-1 rounded"
+          >
+            {node}
+          </span>
+        ))}
+      </div>
+      <div className="mt-4">
+        <strong>BFS Stack:</strong>
+        {bfsStack.map((node, index) => (
+          <span
+            key={index}
+            className="ml-2 bg-yellow-500 text-white font-bold px-2 py-1 rounded"
+          >
+            {node}
+          </span>
+        ))}
+      </div>
+      <div className="mt-4">
+        <strong>DFS Stack:</strong>
+        {dfsStack.map((node, index) => (
+          <span
+            key={index}
+            className="ml-2 bg-orange-500 text-white font-bold px-2 py-1 rounded"
           >
             {node}
           </span>
