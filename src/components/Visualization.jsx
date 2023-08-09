@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Visualization = () => {
   const [nodes, setNodes] = useState([]);
@@ -16,7 +16,10 @@ const Visualization = () => {
       const rect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      setNodes((prevNodes) => [...prevNodes, { x, y }]);
+      setNodes((prevNodes) => [
+        ...prevNodes,
+        { x, y, label: (prevNodes.length + 1).toString() },
+      ]);
     }
   };
 
@@ -119,8 +122,14 @@ const Visualization = () => {
         {edges.map((edge, index) => {
           const sourceNode = nodes[edge.source];
           const targetNode = nodes[edge.target];
-          const angle = Math.atan2(targetNode.y - sourceNode.y, targetNode.x - sourceNode.x);
-          const distance = Math.sqrt((targetNode.x - sourceNode.x) ** 2 + (targetNode.y - sourceNode.y) ** 2);
+          const angle = Math.atan2(
+            targetNode.y - sourceNode.y,
+            targetNode.x - sourceNode.x
+          );
+          const distance = Math.sqrt(
+            (targetNode.x - sourceNode.x) ** 2 +
+              (targetNode.y - sourceNode.y) ** 2
+          );
 
           return (
             <div
@@ -154,6 +163,10 @@ const Visualization = () => {
                 ? 'green'
                 : 'blue',
               borderRadius: '50%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              color: 'white',
             }}
             onContextMenu={(event) => handleNodeContextMenu(event, index)}
           >
@@ -164,22 +177,35 @@ const Visualization = () => {
                 cursor: 'context-menu',
               }}
               onContextMenu={(event) => handleChildNodeContextMenu(event, index)}
-            />
+            >
+              {node.label}
+            </div>
           </div>
         ))}
       </div>
-      <div>
-        <button onClick={handleBfsStart} disabled={isBfsInProgress}>
+      <div className="mt-4">
+        <button
+          className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={handleBfsStart}
+          disabled={isBfsInProgress}
+        >
           Start BFS Visualization
         </button>
-        <button onClick={handleDfsStart} disabled={isDfsInProgress}>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={handleDfsStart}
+          disabled={isDfsInProgress}
+        >
           Start DFS Visualization
         </button>
       </div>
-      <div>
+      <div className="mt-4">
         <strong>Visited Nodes:</strong>
         {visitedNodes.map((node, index) => (
-          <span key={index} style={{ margin: '0 5px' }}>
+          <span
+            key={index}
+            className="ml-2 bg-green-500 text-white font-bold px-2 py-1 rounded"
+          >
             {node}
           </span>
         ))}

@@ -13,7 +13,10 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Tree Visualization App</h1>
+     <div className="text-black font-bold text-xl">
+            <span className="text-2xl">Graph</span>
+            <span className="text-red-500">Sense</span>
+          </div>
       <Visualization nodes={nodes} />
     </div>
   );

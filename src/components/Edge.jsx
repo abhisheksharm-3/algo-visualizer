@@ -6,11 +6,9 @@ const Edge = ({ startX, startY, endX, endY }) => {
 
   return (
     <div
+      className="absolute w-[2px] h-[2px] bg-gray-700"
       style={{
-        position: 'absolute',
-        width: distance,
-        height: 2,
-        backgroundColor: '#333',
+        width: `${distance}px`,
         transform: `translate(${startX}px, ${startY}px) rotate(${angle}deg)`,
         transformOrigin: '0 0',
       }}

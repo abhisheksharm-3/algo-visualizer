@@ -13,13 +13,7 @@ const Node = ({ id, left, top, children }) => {
   return (
     <div
       ref={drag}
-      style={{
-        position: 'absolute',
-        left,
-        top,
-        opacity: isDragging ? 0.5 : 1,
-        cursor: 'move',
-      }}
+      className={`absolute left-${left} top-${top} ${isDragging ? 'opacity-50' : 'opacity-100'} cursor-move`}
     >
       {children}
     </div>
