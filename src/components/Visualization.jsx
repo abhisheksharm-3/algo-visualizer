@@ -113,7 +113,7 @@ const Visualization = () => {
   };
 
   return (
-    <div>
+    <div className='w-screen flex flex-col items-center justify-center text-[#acacac]'>
       <div
         style={{
           position: 'relative',
@@ -141,11 +141,11 @@ const Visualization = () => {
               key={index}
               style={{
                 position: 'absolute',
-                left: sourceNode.x + 'px',
-                top: sourceNode.y + 'px',
+                left: sourceNode.x+11 + 'px',
+                top: sourceNode.y+8 + 'px',
                 width: distance + 'px',
                 height: '1px',
-                backgroundColor: 'black',
+                backgroundColor: '#acacac',
                 transform: `rotate(${angle}rad)`,
                 transformOrigin: '0 0',
               }}
@@ -156,6 +156,7 @@ const Visualization = () => {
           <div
             key={index}
             data-node-index={index}
+            className='text-center flex items-center justify-center text-white rounded-2xl'
             style={{
               position: 'absolute',
               left: node.x + 'px',
@@ -165,13 +166,8 @@ const Visualization = () => {
               backgroundColor: selectedParentNodes.includes(index)
                 ? 'red'
                 : visitedNodes.includes(index)
-                ? 'green'
+                ? '#49B618'
                 : 'blue',
-              borderRadius: '50%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              color: 'white',
             }}
             onContextMenu={(event) => handleNodeContextMenu(event, index)}
           >
@@ -188,7 +184,7 @@ const Visualization = () => {
           </div>
         ))}
       </div>
-      <div className="mt-4">
+      <div className="flex mt-32 lg:mt-4">
         <button
           className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={handleBfsStart}
