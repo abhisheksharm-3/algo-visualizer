@@ -12,7 +12,7 @@ function Home() {
 
   return (
     <div className="flex flex-col items-center">
-        <img src="./assets/logo.png
+        <img src="../src/assets/logo.png
         " className='w-[30%]'/>
       <Visualization nodes={nodes} className=""/>
     </div>
