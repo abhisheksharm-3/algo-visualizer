@@ -5,7 +5,6 @@ const Visualization = () => {
   const [edges, setEdges] = useState([]);
   const [selectedParentNodes, setSelectedParentNodes] = useState([]);
   const [selectedChildNodes, setSelectedChildNodes] = useState([]);
-  const [clickCount, setClickCount] = useState(0);
   const [visitedNodes, setVisitedNodes] = useState([]);
   const [isBfsInProgress, setIsBfsInProgress] = useState(false);
   const [isDfsInProgress, setIsDfsInProgress] = useState(false);
@@ -26,21 +25,18 @@ const Visualization = () => {
 
   const handleNodeContextMenu = (event, index) => {
     event.preventDefault();
-    setSelectedChildNodes([]);
     if (!selectedParentNodes.includes(index)) {
       setSelectedParentNodes([index]);
-      setClickCount((prevCount) => prevCount + 1);
     } else {
-      if (clickCount === 1 && selectedParentNodes[0] === index) {
+      if (selectedParentNodes[0] === index) {
         setSelectedParentNodes([]);
-        setClickCount(0);
       }
     }
   };
 
   const handleChildNodeContextMenu = (event, index) => {
     event.preventDefault();
-    if (selectedParentNodes.length > 0 && !selectedChildNodes.includes(index)) {
+    if (selectedParentNodes.length > 0) {
       setSelectedChildNodes([index]);
       const newEdges = selectedParentNodes.map((parentNode) => ({
         source: parentNode,
@@ -75,7 +71,7 @@ const Visualization = () => {
         }
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 700));
     }
 
     setIsBfsInProgress(false);
@@ -106,7 +102,7 @@ const Visualization = () => {
         }
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 700));
     }
 
     setIsDfsInProgress(false);
@@ -115,12 +111,7 @@ const Visualization = () => {
   return (
     <div className='w-screen flex flex-col items-center justify-center text-[#acacac]'>
       <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '500px',
-          border: '1px solid #ccc',
-        }}
+      className='relative w-full h-[500px] border border-[#acacac]'
         onClick={handleNodeClick}
         onContextMenu={(e) => e.preventDefault()}
       >
@@ -172,6 +163,7 @@ const Visualization = () => {
             onContextMenu={(event) => handleNodeContextMenu(event, index)}
           >
             <div
+            className='text-center flex items-center justify-center'
               style={{
                 width: '100%',
                 height: '100%',
@@ -190,14 +182,14 @@ const Visualization = () => {
           onClick={handleBfsStart}
           disabled={isBfsInProgress}
         >
-          Start BFS Visualization
+          BFS Visualization
         </button>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={handleDfsStart}
           disabled={isDfsInProgress}
         >
-          Start DFS Visualization
+          DFS Visualization
         </button>
       </div>
       <div className="mt-4">
@@ -222,7 +214,7 @@ const Visualization = () => {
           </span>
         ))}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 mb-16">
         <strong>DFS Stack:</strong>
         {dfsStack.map((node, index) => (
           <span
