@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const Visualization = () => {
   const [nodes, setNodes] = useState([]);
@@ -10,6 +10,9 @@ const Visualization = () => {
   const [isDfsInProgress, setIsDfsInProgress] = useState(false);
   const [bfsStack, setBfsStack] = useState([]);
   const [dfsStack, setDfsStack] = useState([]);
+  const [isBestFirstSearchInProgress, setIsBestFirstSearchInProgress] =
+    useState(false);
+  const [bestFirstSearchStack, setBestFirstSearchStack] = useState([]);
 
   const handleNodeClick = (event) => {
     if (event.button === 0) {
@@ -108,10 +111,44 @@ const Visualization = () => {
     setIsDfsInProgress(false);
   };
 
+  const handleBestFirstSearchStart = async () => {
+    if (isBestFirstSearchInProgress || selectedParentNodes.length === 0) return;
+    setIsBestFirstSearchInProgress(true);
+    setVisitedNodes([]);
+    setBestFirstSearchStack([...selectedParentNodes]);
+
+    const bfsQueue = [...selectedParentNodes];
+    const visited = new Set();
+
+    while (bfsQueue.length > 0) {
+      // Sort the BFS queue based on node number heuristic
+      bfsQueue.sort((a, b) => nodes[a].label - nodes[b].label);
+
+      const currentNode = bfsQueue.shift();
+      setVisitedNodes((prevVisited) => [...prevVisited, currentNode]);
+      visited.add(currentNode);
+
+      const adjacentNodes = edges
+        .filter((edge) => edge.source === currentNode)
+        .map((edge) => edge.target);
+
+      for (const node of adjacentNodes) {
+        if (!visited.has(node) && !bfsQueue.includes(node)) {
+          bfsQueue.push(node);
+          setBestFirstSearchStack((prevStack) => [...prevStack, node]);
+        }
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 700));
+    }
+
+    setIsBestFirstSearchInProgress(false);
+  };
+
   return (
-    <div className='w-screen flex flex-col items-center justify-center text-[#acacac]'>
+    <div className="w-screen flex flex-col items-center justify-center text-[#acacac]">
       <div
-      className='relative w-full h-[500px] border border-[#acacac]'
+        className="relative w-full h-[500px] border border-[#acacac]"
         onClick={handleNodeClick}
         onContextMenu={(e) => e.preventDefault()}
       >
@@ -124,21 +161,21 @@ const Visualization = () => {
           );
           const distance = Math.sqrt(
             (targetNode.x - sourceNode.x) ** 2 +
-            (targetNode.y - sourceNode.y) ** 2
+              (targetNode.y - sourceNode.y) ** 2
           );
 
           return (
             <div
               key={index}
               style={{
-                position: 'absolute',
-                left: sourceNode.x+11 + 'px',
-                top: sourceNode.y+8 + 'px',
-                width: distance + 'px',
-                height: '1px',
-                backgroundColor: '#acacac',
+                position: "absolute",
+                left: sourceNode.x + 11 + "px",
+                top: sourceNode.y + 8 + "px",
+                width: distance + "px",
+                height: "1px",
+                backgroundColor: "#acacac",
                 transform: `rotate(${angle}rad)`,
-                transformOrigin: '0 0',
+                transformOrigin: "0 0",
               }}
             />
           );
@@ -147,29 +184,31 @@ const Visualization = () => {
           <div
             key={index}
             data-node-index={index}
-            className='text-center flex items-center justify-center text-white rounded-2xl'
+            className="text-center flex items-center justify-center text-white rounded-2xl"
             style={{
-              position: 'absolute',
-              left: node.x + 'px',
-              top: node.y + 'px',
-              width: '20px',
-              height: '20px',
+              position: "absolute",
+              left: node.x + "px",
+              top: node.y + "px",
+              width: "20px",
+              height: "20px",
               backgroundColor: selectedParentNodes.includes(index)
-                ? 'red'
+                ? "red"
                 : visitedNodes.includes(index)
-                ? '#49B618'
-                : 'blue',
+                ? "#49B618"
+                : "blue",
             }}
             onContextMenu={(event) => handleNodeContextMenu(event, index)}
           >
             <div
-            className='text-center flex items-center justify-center'
+              className="text-center flex items-center justify-center"
               style={{
-                width: '100%',
-                height: '100%',
-                cursor: 'context-menu',
+                width: "100%",
+                height: "100%",
+                cursor: "context-menu",
               }}
-              onContextMenu={(event) => handleChildNodeContextMenu(event, index)}
+              onContextMenu={(event) =>
+                handleChildNodeContextMenu(event, index)
+              }
             >
               {node.label}
             </div>
@@ -190,6 +229,13 @@ const Visualization = () => {
           disabled={isDfsInProgress}
         >
           DFS Visualization
+        </button>
+        <button
+          className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-3"
+          onClick={handleBestFirstSearchStart}
+          disabled={isBestFirstSearchInProgress}
+        >
+          Best First Search Visualization
         </button>
       </div>
       <div className="mt-4">
@@ -214,9 +260,20 @@ const Visualization = () => {
           </span>
         ))}
       </div>
-      <div className="mt-4 mb-16">
+      <div className="mt-4">
         <strong>DFS Stack:</strong>
         {dfsStack.map((node, index) => (
+          <span
+            key={index}
+            className="ml-2 bg-orange-500 text-white font-bold px-2 py-1 rounded"
+          >
+            {node}
+          </span>
+        ))}
+      </div>
+      <div className="mt-4 mb-16">
+        <strong>BestFS Stack:</strong>
+        {bestFirstSearchStack.map((node, index) => (
           <span
             key={index}
             className="ml-2 bg-orange-500 text-white font-bold px-2 py-1 rounded"
