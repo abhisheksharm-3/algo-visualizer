@@ -11,7 +11,7 @@ const Graph = ({
 }) => {
   return (
     <div
-      className="relative w-full h-[500px] border border-[#acacac]"
+      className="relative w-full h-5/6 border border-[#acacac]"
       onClick={handleNodeClick}
       onContextMenu={(e) => e.preventDefault()}
     >
