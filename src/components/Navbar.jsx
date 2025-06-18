@@ -1,6 +1,6 @@
 const Navbar = () => {
   return (
-    <nav className="bg-[#090909] p-4 w-screen">
+    <nav className="bg-[#121212] border-b border-[#2a2a2a] p-4 w-full">
       <div className="container mx-auto flex items-center justify-between">
         <div className="text-white font-bold text-xl">
           <img
@@ -10,11 +10,12 @@ const Navbar = () => {
           />
         </div>
 
-        <div className="space-x-4 flex items-center">
-          <button className="text-white hover:text-gray-300" onClick={() => {window.location.reload()}}>
-            Reset Canvas
-          </button>
-        </div>
+        <button 
+          className="px-5 py-2 text-[11px] tracking-widest text-[#a0a0a0] hover:text-[#f0f0f0] transition-colors duration-300 uppercase font-light"
+          onClick={() => {window.location.reload()}}
+        >
+          New Canvas
+        </button>
       </div>
     </nav>
   );
